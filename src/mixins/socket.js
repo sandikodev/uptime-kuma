@@ -98,7 +98,7 @@ export default {
             }
 
             // Also don't need to connect to the socket.io for setup database page
-            if (location.pathname === "/setup-database") {
+            if (location.pathname.endsWith("/setup-database")) {
                 return;
             }
 

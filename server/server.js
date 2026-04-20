@@ -242,6 +242,8 @@ let needSetup = false;
     // Normal Router here
     // ***************************
 
+    const basePath = process.env.UPTIME_KUMA_BASE_PATH || "";
+
     // Entry Page
     app.get("/", async (request, response) => {
         let hostname = request.hostname;
@@ -261,19 +263,23 @@ let needSetup = false;
             let slug = StatusPage.domainMappingList[hostname];
             await StatusPage.handleStatusPageResponse(response, server.indexHTML, slug);
         } else if (uptimeKumaEntryPage && uptimeKumaEntryPage.startsWith("statusPage-")) {
-            response.redirect("/status/" + uptimeKumaEntryPage.replace("statusPage-", ""));
+            response.redirect(basePath + "/status/" + uptimeKumaEntryPage.replace("statusPage-", ""));
         } else {
-            response.redirect("/dashboard");
+            response.redirect(basePath + "/dashboard");
         }
     });
 
-    app.get("/setup-database-info", (request, response) => {
+    const setupDatabaseInfoHandler = (request, response) => {
         allowDevAllOrigin(response);
         response.json({
             runningSetup: false,
             needSetup: false,
         });
-    });
+    };
+    app.get("/setup-database-info", setupDatabaseInfoHandler);
+    if (basePath) {
+        app.get(basePath + "/setup-database-info", setupDatabaseInfoHandler);
+    }
 
     if (isDev) {
         app.use(express.urlencoded({ extended: true }));
@@ -336,21 +342,12 @@ let needSetup = false;
     // With Basic Auth using the first user's username/password
     app.get("/metrics", apiAuth, prometheusAPIMetrics());
 
-    const basePath = process.env.UPTIME_KUMA_BASE_PATH || "";
-
     app.use(
         basePath + "/",
         expressStaticGzip("dist", {
             enableBrotli: true,
         })
     );
-
-    // Redirect root to base path if base path is set
-    if (basePath) {
-        app.get("/", (req, res) => {
-            res.redirect(basePath + "/dashboard");
-        });
-    }
 
     // ./data/upload
     app.use("/upload", express.static(Database.uploadDir));
@@ -359,27 +356,22 @@ let needSetup = false;
         response.redirect("https://github.com/louislam/uptime-kuma/wiki/Reset-Password-via-CLI");
     });
 
-    // API Router
+    // API Router & Status Page Router
     const apiRouter = require("./routers/api-router");
-    app.use(apiRouter);
+    const statusPageRouter = require("./routers/status-page-router");
+
     if (basePath) {
         app.use(basePath, apiRouter);
-    }
-
-    // Status Page Router
-    const statusPageRouter = require("./routers/status-page-router");
-    app.use(statusPageRouter);
-    if (basePath) {
         app.use(basePath, statusPageRouter);
+    } else {
+        app.use(apiRouter);
+        app.use(statusPageRouter);
     }
 
     // Universal Route Handler, must be at the end of all express routes.
     app.get("*", async (_request, response) => {
         if (_request.originalUrl.startsWith("/upload/")) {
             response.status(404).send("File not found.");
-        } else if (basePath && !_request.originalUrl.startsWith(basePath + "/") && _request.originalUrl !== basePath) {
-            // If base path is set, redirect unknown paths to base path
-            response.redirect(basePath + "/dashboard");
         } else {
             response.send(server.indexHTML);
         }
