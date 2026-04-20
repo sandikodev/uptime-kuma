@@ -4,6 +4,29 @@
 
 # Uptime Kuma
 
+---
+
+> **Note — sandikodev fork**
+>
+> This fork adds `UPTIME_KUMA_BASE_PATH` support for subpath deployment (e.g. `example.com/uptime/`).
+> See [issue #147](https://github.com/louislam/uptime-kuma/issues/147) for context.
+>
+> The PR was rejected and the account banned before the technical discussion could conclude.
+> I'm leaving this here because the work is real, the solution works in production,
+> and I believe in the value of what was built — regardless of how it was received.
+>
+> I use AI as a cognitive tool, the same way others use IDEs, linters, or Stack Overflow.
+> Every line was reviewed, tested, and deployed by me. That responsibility is mine alone.
+>
+> If this is useful to you, use it. Fork it. Improve it.
+> That's what open source is for.
+>
+> — [@sandikodev](https://github.com/sandikodev) · [Kenari](https://github.com/sandikodev/kenari)
+
+---
+
+
+
 Uptime Kuma is an easy-to-use self-hosted monitoring tool.
 
 <a target="_blank" href="https://github.com/louislam/uptime-kuma"><img src="https://img.shields.io/github/stars/louislam/uptime-kuma?style=flat" /></a> <a target="_blank" href="https://hub.docker.com/r/louislam/uptime-kuma"><img src="https://img.shields.io/docker/pulls/louislam/uptime-kuma" /></a> <a target="_blank" href="https://hub.docker.com/r/louislam/uptime-kuma"><img src="https://img.shields.io/docker/v/louislam/uptime-kuma/2?label=docker%20image%20ver." /></a> <a target="_blank" href="https://github.com/louislam/uptime-kuma"><img src="https://img.shields.io/github/last-commit/louislam/uptime-kuma" /></a> <a target="_blank" href="https://opencollective.com/uptime-kuma"><img src="https://opencollective.com/uptime-kuma/total/badge.svg?label=Open%20Collective%20Backers&color=brightgreen" /></a>
